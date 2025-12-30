@@ -1,0 +1,13 @@
+{
+  "name": "observability-app",
+  "version": "1.0.0",
+  "description": "Basic Node.js frontend + backend app",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "prom-client": "^15.1.2"
+  }
+}
