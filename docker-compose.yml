@@ -1,0 +1,10 @@
+version: "3.9"
+
+services:
+  app:
+    build: ./app
+    image: observability-app:1.4
+    container_name: observability-app
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
