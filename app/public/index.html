@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Observability Demo App</title>
+</head>
+<body>
+  <h1>Observability Demo App</h1>
+
+  <button onclick="callApi('/api/data')">Normal Request (200)</button>
+  <button onclick="callApi('/api/error/500')">Force 500</button>
+  <button onclick="callApi('/api/error/404')">Force 404</button>
+  <button onclick="callApi('/api/random')">Random Request</button>
+
+  <pre id="output"></pre>
+
+  <script>
+    async function callApi(endpoint) {
+      const output = document.getElementById("output");
+      output.textContent = "Loading...";
+
+      try {
+        const res = await fetch(endpoint);
+        const text = await res.text();
+        output.textContent =
+          `Status: ${res.status}\n\n${text}`;
+      } catch (err) {
+        output.textContent = "Request failed";
+      }
+    }
+  </script>
+</body>
+</html>
