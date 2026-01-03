@@ -1,0 +1,19 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  group_by: ["alertname"]
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+  receiver: "email-notifications"
+
+receivers:
+  - name: "email-notifications"
+    email_configs:
+      - to: "xaldinx@gmail.com"
+        from: "xaldinx@gmail.com"
+        smarthost: "smtp.gmail.com:587"
+        auth_username: "xaldinx@gmail.com"
+        auth_password: "raqn jamh scpy xcew"
+        send_resolved: true
