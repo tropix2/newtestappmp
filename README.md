@@ -108,6 +108,16 @@ Prometheus running on the VPS scrapes the application metrics remotely.
   - In-flight requests
 - Includes a frontend for traffic and error simulation
 
+## Frontend UI
+
+The application includes a simple frontend that allows:
+
+- Generating HTTP traffic
+- Simulating 200, 404, and 500 responses
+- Adjusting request rate dynamically
+
+![Frontend UI](https://iili.io/fweJ8JV.png)
+
 ## Access
 
 - Application: http://demoappaldin.ddns.net:3000
