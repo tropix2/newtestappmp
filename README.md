@@ -81,7 +81,8 @@ Prometheus running on the VPS scrapes the application metrics remotely.
   - Host metrics
   - Container metrics
   - Alert visibility
-- Used to observe system behavior in real time
+
+![Frontend UI](https://iili.io/fweejqv.png)
 
 ### Alertmanager
 
