@@ -1,46 +1,46 @@
-Observability Stack – SRE Demo
+# Observability Demo
 
-This repository demonstrates a practical observability setup built from a Site Reliability Engineering (SRE) perspective using Prometheus, Grafana, Alertmanager, and a custom instrumented application.
+Prometheus, Grafana and Alertmanager observability demo.
 
-The focus is on application metrics, infrastructure visibility, and alerting, implemented in a realistic distributed setup.
+## Overview
 
-🧱 Architecture Overview
+This project demonstrates monitoring and alerting using Prometheus and Grafana.
+The monitoring stack runs on a VPS, while the monitored application runs on a
+separate host and is scraped remotely.
 
-This demo intentionally runs components on separate hosts to reflect real-world environments.
+## Components
 
-🖥️ Monitoring Stack (VPS – Docker Compose)
+- Prometheus
+- Grafana
+- Alertmanager
+- Node Exporter
+- cAdvisor
+- Sample Node.js application
 
-Deployed on a Linux VPS using Docker Compose:
+## Architecture
 
-Prometheus – metrics collection and alert rule evaluation
+- Monitoring stack: VPS (Docker Compose)
+- Application: Separate host (Docker Desktop, Windows 11)
+- Access via Dynamic DNS (DDNS)
 
-Grafana – dashboards and alert visualization
+## Access
 
-Alertmanager – alert routing and email notifications
+- Application: http://demoappaldin.ddns.net:3000
+- Grafana: http://demoappaldinvps.ddns.net:3001
+- Prometheus: http://demoappaldinvps.ddns.net:9090
+- Alertmanager: http://demoappaldinvps.ddns.net:9093
 
-Node Exporter – host-level metrics (CPU, memory, network)
+## Metrics
 
-cAdvisor – container-level metrics
+The application exposes Prometheus metrics for:
+- Request count
+- Request latency
+- In-flight requests
 
-Each service is exposed via its own port and reachable through a DDNS domain.
+## Alerting
 
-💻 Sample Application (Local PC)
+Alerts are triggered on high HTTP 500 error rates and delivered via email.
 
-The sample application runs locally on a separate machine (Windows 11) using Docker Desktop.
+## Author
 
-Exposed publicly using Dynamic DNS (DDNS)
-
-Monitored remotely by Prometheus running on the VPS
-
-Simulates application behaviour and failures through a frontend UI
-
-This satisfies the requirement of monitoring an application running on a separate host.
-
-🌐 Networking & Access
-Component	Location	Access
-Application	Local PC	http://demoappaldin.ddns.net:3000
-Prometheus	VPS	http://demoappaldinvps.ddns.net:9090
-Grafana	VPS	http://demoappaldinvps.ddns.net:3001
-Alertmanager	VPS	http://demoappaldinvps.ddns.net:9093
-
-
+Aldin Mujkić
