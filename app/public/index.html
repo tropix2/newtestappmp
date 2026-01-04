@@ -2,20 +2,46 @@
 <html>
 <head>
   <title>Observability Traffic Generator</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Traffic Generator</h1>
+  <main class="panel">
+    <h1>Traffic Generator</h1>
+    <p class="hint">Adjust the sliders to send steady traffic. Use the buttons to issue a single request.</p>
 
-  <label>200 OK / sec</label><br>
-  <input type="range" min="0" max="20" value="0" id="ok"><br><br>
+    <div class="control">
+      <div class="control-header">
+        <label for="ok">200 OK</label>
+        <span class="value" id="ok-value">0 req/s</span>
+      </div>
+      <input type="range" min="0" max="20" value="0" id="ok">
+    </div>
 
-  <label>500 errors / sec</label><br>
-  <input type="range" min="0" max="20" value="0" id="e500"><br><br>
+    <div class="control">
+      <div class="control-header">
+        <label for="e404">404 Not Found</label>
+        <span class="value" id="e404-value">0 req/s</span>
+      </div>
+      <input type="range" min="0" max="20" value="0" id="e404">
+    </div>
 
-  <label>404 errors / sec</label><br>
-  <input type="range" min="0" max="20" value="0" id="e404"><br><br>
+    <div class="control">
+      <div class="control-header">
+        <label for="e500">500 Errors</label>
+        <span class="value" id="e500-value">0 req/s</span>
+      </div>
+      <input type="range" min="0" max="20" value="0" id="e500">
+    </div>
 
-  <button id="burst500">Burst 500 (30/s)</button>
+    <div class="actions">
+      <button id="send-200">Send 200</button>
+      <button id="send-404">Send 404</button>
+      <button id="send-500" class="danger">Send 500</button>
+      <button id="burst500" class="danger">Burst 500 (30/s for 10s)</button>
+    </div>
+
+    <p class="note">Traffic is sent directly to the backend endpoints, so Prometheus and Grafana charts should react within seconds.</p>
+  </main>
 
   <script src="app.js"></script>
 </body>
