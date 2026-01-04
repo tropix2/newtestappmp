@@ -39,10 +39,16 @@ app.use((req, res, next) => {
     const duration =
       Number(process.hrtime.bigint() - start) / 1e9;
 
+    const rawRoute =
+      (req.route && req.route.path) ||
+      req.baseUrl ||
+      (req.path && req.path.split("?")[0]) ||
+      "unmatched";
+
     const route =
-      req.route && req.route.path
-        ? req.route.path
-        : "unmatched";
+      !req.route && res.statusCode === 404
+        ? "unmatched_404"
+        : rawRoute;
 
     httpRequestDuration
       .labels(req.method, route)
