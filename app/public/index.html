@@ -1,33 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Observability Demo App</title>
+  <title>Observability Traffic Generator</title>
 </head>
 <body>
-  <h1>Observability Demo App</h1>
+  <h1>Traffic Generator</h1>
 
-  <button onclick="callApi('/api/data')">Normal Request (200)</button>
-  <button onclick="callApi('/api/error/500')">Force 500</button>
-  <button onclick="callApi('/api/error/404')">Force 404</button>
-  <button onclick="callApi('/api/random')">Random Request</button>
+  <label>200 OK / sec</label><br>
+  <input type="range" min="0" max="20" value="0" id="ok"><br><br>
 
-  <pre id="output"></pre>
+  <label>500 errors / sec</label><br>
+  <input type="range" min="0" max="20" value="0" id="e500"><br><br>
 
-  <script>
-    async function callApi(endpoint) {
-      const output = document.getElementById("output");
-      output.textContent = "Loading...";
+  <label>404 errors / sec</label><br>
+  <input type="range" min="0" max="20" value="0" id="e404"><br><br>
 
-      try {
-        const res = await fetch(endpoint);
-        const text = await res.text();
-        output.textContent =
-          `Status: ${res.status}\n\n${text}`;
-      } catch (err) {
-        output.textContent = "Request failed";
-      }
-    }
-  </script>
+  <button id="burst500">Burst 500 (30/s)</button>
+
+  <script src="app.js"></script>
 </body>
 </html>

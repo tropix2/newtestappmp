@@ -5,11 +5,10 @@ const client = require("prom-client");
 const app = express();
 const PORT = 3000;
 
-/**
- * Prometheus metrics
- */
-const collectDefaultMetrics = client.collectDefaultMetrics;
-collectDefaultMetrics();
+/* ============================
+   Prometheus setup
+============================ */
+client.collectDefaultMetrics();
 
 const httpRequestsTotal = new client.Counter({
   name: "app_http_requests_total",
@@ -29,41 +28,46 @@ const inFlightRequests = new client.Gauge({
   help: "In-flight HTTP requests"
 });
 
-/**
- * Middleware for metrics
- */
+/* ============================
+   Metrics middleware (CRITICAL)
+============================ */
 app.use((req, res, next) => {
-  const end = httpRequestDuration.startTimer({
-    method: req.method,
-    route: req.path
-  });
-
+  const start = process.hrtime.bigint();
   inFlightRequests.inc();
 
   res.on("finish", () => {
-    end();
-    inFlightRequests.dec();
+    const duration =
+      Number(process.hrtime.bigint() - start) / 1e9;
 
-    httpRequestsTotal.inc({
-      method: req.method,
-      route: req.path,
-      status: res.statusCode
-    });
+    const route =
+      req.route && req.route.path
+        ? req.route.path
+        : "unmatched";
+
+    httpRequestDuration
+      .labels(req.method, route)
+      .observe(duration);
+
+    httpRequestsTotal
+      .labels(req.method, route, String(res.statusCode))
+      .inc();
+
+    inFlightRequests.dec();
   });
 
   next();
 });
 
-// Serve frontend
+/* ============================
+   Static frontend
+============================ */
 app.use(express.static(path.join(__dirname, "public")));
 
-// API routes
-app.get("/api/data", (req, res) => {
-  res.json({ message: "Everything is OK" });
-});
-
-app.get("/api/health", (req, res) => {
-  res.json({ status: "ok" });
+/* ============================
+   API routes (REAL HTTP)
+============================ */
+app.get("/api/ok", (req, res) => {
+  res.status(200).json({ message: "OK" });
 });
 
 app.get("/api/error/500", (req, res) => {
@@ -74,24 +78,34 @@ app.get("/api/error/404", (req, res) => {
   res.status(404).json({ error: "Not Found (simulated)" });
 });
 
-app.get("/api/random", (req, res) => {
-  const rand = Math.random();
-  if (rand < 0.7) {
-    res.json({ message: "Random OK response" });
-  } else if (rand < 0.85) {
-    res.status(404).json({ error: "Random 404 error" });
-  } else {
-    res.status(500).json({ error: "Random 500 error" });
-  }
+app.get("/api/work", async (req, res) => {
+  const delay = Math.min(Number(req.query.ms) || 100, 2000);
+  await new Promise((r) => setTimeout(r, delay));
+  res.json({ message: `Worked ${delay}ms` });
 });
 
-// Metrics endpoint
+/* ============================
+   Health & Metrics
+============================ */
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 app.get("/metrics", async (req, res) => {
   res.set("Content-Type", client.register.contentType);
   res.end(await client.register.metrics());
 });
 
-// Start server
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`App running on port ${PORT}`);
+/* ============================
+   404 handler (IMPORTANT)
+============================ */
+app.use((req, res) => {
+  res.status(404).send("Not Found");
+});
+
+/* ============================
+   Start server
+============================ */
+app.listen(PORT, () => {
+  console.log(`Observability app listening on port ${PORT}`);
 });
